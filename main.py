@@ -32,6 +32,14 @@ print(
 
 df2 = pd.read_csv('zamowienia.csv', header=0, sep=';', decimal='.')
 print(df2)
-print(f"listę unikalnych nazwisk sprzedawców (przetwarzając zwróconą pojedynczą kolumnę z DataFrame):{df2.Sprzedawca.unique()}")
-print(f"5 najwyższych wartości zamówień:\n {df2.sort_values('Utarg',ascending = False).head(5)}")
-print(f"")
+print(f"listę unikalnych nazwisk sprzedawców (przetwarzając zwróconą pojedynczą kolumnę z DataFrame):"
+      f"{df2.Sprzedawca.unique()}")
+print(f"5 najwyższych wartości zamówień:\n {df2.sort_values('Utarg', ascending=False).head(5)}")
+print(f"ilość zamówień złożonych przez każdego sprzedawcę\n {df2.groupby(['Sprzedawca'])[['Utarg']].sum()}")
+print(f"sumę zamówień dla każdego kraju\n {df2.groupby(['Kraj'])[['Utarg']].sum()} ")
+df2['Data zamowienia'] = pd.to_datetime(df2['Data zamowienia'])
+firstdate = pd.to_datetime(['01.01.2004'], format='%d.%m.%Y')
+seconddate = pd.to_datetime(['01.01.2005'], format='%d.%m.%Y')
+print(type(firstdate))
+print(f"the sum of orders for 2005, for sellers from Poland\n"
+      f" {df2[(df2.Kraj == 'Polska') & (not firstdate > df2['Data zamowienia'] < seconddate)][['Utarg']].sum()}")
