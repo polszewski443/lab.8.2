@@ -14,7 +14,7 @@ print('sumę wszystkich urodzonych dzieci w całym danym okresie')
 print(f"Suma: {df1['Liczba'].sum()}")
 print('##########Zad4##########')
 print('sumę dzieci urodzonych w latach 2000-2005')
-print(f"Suma: {df1[(df1.Rok >= 2000) & (df1.Rok <= 2005)]['Liczba'].sum()}")
+print(f"Suma: {df1[(df1['Rok'] >= 2000) & (df1['Rok'] <= 2005)]['Liczba'].sum()}")
 print('##########Zad5##########')
 print('sumę urodzonych chłopców i dziewczynek ')
 print(f"Suma ur. chlopcow: {df1[(df1.Plec == 'M')]['Liczba'].sum()}")
@@ -35,11 +35,15 @@ print(df2)
 print(f"listę unikalnych nazwisk sprzedawców (przetwarzając zwróconą pojedynczą kolumnę z DataFrame):"
       f"{df2.Sprzedawca.unique()}")
 print(f"5 najwyższych wartości zamówień:\n {df2.sort_values('Utarg', ascending=False).head(5)}")
-print(f"ilość zamówień złożonych przez każdego sprzedawcę\n {df2.groupby(['Sprzedawca'])[['Utarg']].sum()}")
-print(f"sumę zamówień dla każdego kraju\n {df2.groupby(['Kraj'])[['Utarg']].sum()} ")
-df2['Data zamowienia'] = pd.to_datetime(df2['Data zamowienia'])
-firstdate = pd.to_datetime(['01.01.2004'], format='%d.%m.%Y')
-seconddate = pd.to_datetime(['01.01.2005'], format='%d.%m.%Y')
-print(type(firstdate))
-print(f"the sum of orders for 2005, for sellers from Poland\n"
-      f" {df2[(df2.Kraj == 'Polska') & (not firstdate > df2['Data zamowienia'] < seconddate)][['Utarg']].sum()}")
+print(f"ilość zamówień złożonych przez każdego sprzedawcę\n {df2.groupby(['Sprzedawca'])['Utarg'].sum()}")
+print(f"sumę zamówień dla każdego kraju\n {df2.groupby(['Kraj'])[['idZamowienia']].count()} ")
+print(f"sumę zamówień dla sprzedawcow z polski\n {df2.groupby(['Kraj'])[['idZamowienia']].count()} ")
+print(f"sumę zamówień dla roku 2005, dla sprzedawców z Polski \n")
+print(f" {print(df2.loc[(df2['Kraj'] == 'Polska') & (pd.DatetimeIndex(df2['Data zamowienia']).year == 2005)].groupby(['Sprzedawca']).agg({'Sprzedawca': {'count'}}))}")
+print(f"średnią kwotę zamówienia w 2004 roku  {round((df2.loc[(pd.DatetimeIndex(df2['Data zamowienia']).year == 2004)]['Utarg'].mean()), 2)}")
+daneza2004 = df2.loc[((pd.DatetimeIndex(df2['Data zamowienia']).year == 2004))]
+daneza2005 = df2.loc[((pd.DatetimeIndex(df2['Data zamowienia']).year == 2005))]
+daneza2004.to_csv('zamowienia_2004.csv', index=False)
+daneza2005.to_csv('zamowienia_2005.csv', index=False)
+
+
